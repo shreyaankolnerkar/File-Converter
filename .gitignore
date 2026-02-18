@@ -1,0 +1,10 @@
+# Upload / generated files
+uploads/
+converted/
+*.jpg
+*.png
+*.pdf
+*.docx
+*.xlsx
+*.csv
+*.json

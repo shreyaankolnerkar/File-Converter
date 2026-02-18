@@ -1,23 +1,21 @@
+import os
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+from app.converters.csv_to_excel import csv_to_excel
 from app.core.auth import get_api_key
-from app.db.session import get_db
 from app.db.models import File_Data
-from app.converters.csv_to_excel import csv_to_excel  
-import os
+from app.db.session import get_db
 
 router = APIRouter(prefix="/convert", tags=["convert"])
 
 OUTPUT_DIR = "outputs"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+
 @router.post("/csv-to-excel/{file_id}")
-def convert_csv_to_excel(
-    file_id: int,
-    user_id: str = Depends(get_api_key),
-    db: Session = Depends(get_db)
-):
-    
+def convert_csv_to_excel(file_id: int, user_id: str = Depends(get_api_key), db: Session = Depends(get_db)):
     file_record = db.query(File_Data).filter(File_Data.id == file_id, File_Data.user_id == user_id).first()
     if not file_record:
         raise HTTPException(404, "File not found for this API key")
@@ -40,11 +38,8 @@ def convert_csv_to_excel(
         f.write(excel_bytes)
 
     file_record.output_file_url = output_path
-    file_record.status = 1  
+    file_record.status = 1
     db.commit()
     db.refresh(file_record)
 
-    return {
-        "message": "Conversion successful",
-        "output_file_url": output_path
-    }
+    return {"message": "Conversion successful", "output_file_url": output_path}

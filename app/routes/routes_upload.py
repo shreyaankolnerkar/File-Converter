@@ -1,13 +1,16 @@
-from fastapi import APIRouter, UploadFile, Depends
+import os
+
+from fastapi import APIRouter, Depends, UploadFile
 from sqlalchemy.orm import Session
+
 from app.core import storage
 from app.db.session import get_db
-import os
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 router = APIRouter(prefix="/upload", tags=["upload"])
+
 
 @router.post("/")
 async def upload_file_api(file: UploadFile, db: Session = Depends(get_db)):
@@ -17,18 +20,28 @@ async def upload_file_api(file: UploadFile, db: Session = Depends(get_db)):
 
     ext = file.filename.split(".")[-1]
 
+    CONVERSION_MAP = {
+        "csv": "xlsx",
+        "png": "jpg",
+        "jpeg": "jpg",
+        "webp": "jpg",
+        "pdf": "docx",
+    }
+
+    target_ext = CONVERSION_MAP.get(ext)
+
     user_id, file_id = storage.create_file_record(
         db=db,
         filename=file.filename,
         converted_from=ext,
-        converted_to="excel",
+        converted_to=target_ext,
         status=0,
-        expire_hours=24
+        expire_hours=24,
     )
 
     return {
         "api_key": user_id,
         "file_id": file_id,
         "input_file_name": file.filename,
-        "message": "Upload successful. Use this API key for authentication."
+        "message": "Upload successful. Use this API key for authentication.",
     }

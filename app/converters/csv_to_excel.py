@@ -1,5 +1,6 @@
-import pandas as pd
 from io import BytesIO
+
+import pandas as pd
 
 
 def csv_to_excel(csv_bytes: bytes) -> bytes:

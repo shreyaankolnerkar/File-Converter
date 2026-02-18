@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/home/lap-50/Documents/subject/File Converter/.venv/bin/python3" "$0" "$@"
+'''exec' "/home/lap-50/Documents/subject/File Converter/.venv/bin/python" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
