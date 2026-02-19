@@ -26,7 +26,6 @@ def download_converted_file(
     if not file_record.output_file_url:
         raise HTTPException(400, "File has not been converted yet")
 
-    # ✅ Always resolve full path inside uploads
     file_path = os.path.join(UPLOAD_DIR, file_record.output_file_url)
 
     if not os.path.exists(file_path):
@@ -35,7 +34,6 @@ def download_converted_file(
             f"Converted file {file_record.output_file_url} not found on server",
         )
 
-    # ✅ Detect MIME type by extension
     ext = file_record.output_file_url.split(".")[-1].lower()
 
     if ext == "xlsx":

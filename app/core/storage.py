@@ -6,14 +6,10 @@ from sqlalchemy.orm import Session
 
 from app.db.models import File_Data
 
-# folder where files are stored
 UPLOAD_DIR = "uploads"
 
 
-def upload_file_bytes(file_bytes: bytes, filename: str, content_type: str):
-    """
-    Save file bytes to local storage
-    """
+def upload_file_bytes(file_bytes: bytes, filename: str):
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 
     file_path = os.path.join(UPLOAD_DIR, filename)

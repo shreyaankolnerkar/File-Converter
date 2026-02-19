@@ -4,9 +4,6 @@ from PIL import Image
 
 
 def image_to_jpg(image_bytes: bytes) -> bytes:
-    """
-    Convert any image (png, webp, bmp, etc.) to JPG bytes
-    """
 
     img = Image.open(BytesIO(image_bytes))
 

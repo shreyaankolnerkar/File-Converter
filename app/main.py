@@ -1,3 +1,5 @@
+import threading
+
 from fastapi import Depends, FastAPI
 from sqlalchemy import text
 
@@ -10,6 +12,7 @@ from app.routes import (
     routes_download,
     routes_upload,
 )
+from app.worker.redis_worker import start_worker
 
 app = FastAPI(title="File Converter")
 
@@ -23,6 +26,12 @@ def db_test(db=Depends(get_db)):
 @app.on_event("startup")
 def create_tables():
     Base.metadata.create_all(bind=engine)
+
+
+@app.on_event("startup")
+def start_redis_worker():
+    thread = threading.Thread(target=start_worker, daemon=True)
+    thread.start()
 
 
 app.include_router(routes_upload.router)
